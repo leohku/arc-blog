@@ -19,6 +19,7 @@ const buildTree = (id) => {
     if ("easel" in item.data) return "easel";
     if ("list" in item.data) return "list";
     if ("itemContainer" in item.data) return "itemContainer";
+    if ("splitView" in item.data) return "splitView";
     throw "node type not supported: " + JSON.stringify(item);
   })();
   switch (node.type) {
@@ -41,6 +42,7 @@ const buildTree = (id) => {
       );
       break;
     case "itemContainer":
+    case "splitView":
       node.children = item.childrenIds.map((childrenId) =>
         buildTree(childrenId)
       );
