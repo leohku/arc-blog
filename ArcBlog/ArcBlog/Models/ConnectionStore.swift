@@ -45,6 +45,9 @@ class ConnectionStore: ObservableObject {
     init() {
         Task(priority: .medium) {
             do {
+                if try !FileManager.default.fileExists(atPath: Self.appSupportDirectoryURL().path) {
+                    try FileManager.default.createDirectory(atPath: Self.appSupportDirectoryURL().path, withIntermediateDirectories: false, attributes: nil)
+                }
                 try await load()
             } catch {
                 fatalError(error.localizedDescription)
@@ -52,16 +55,18 @@ class ConnectionStore: ObservableObject {
         }
     }
     
-    private static func fileURL() throws -> URL {
-        try FileManager.default.url(for: .allLibrariesDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-            .appendingPathComponent("ArcBlog")
-            .appendingPathComponent("connection.json")
+    private static func appSupportDirectoryURL() throws -> URL {
+        try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            .appendingPathComponent("Arc Blog")
+    }
+    
+    private static func connectionFileURL() throws -> URL {
+        try Self.appSupportDirectoryURL().appendingPathComponent("connection.json")
     }
     
     func load() async throws {
         let task = Task<PersistedData, Error> {
-            let fileURL = try Self.fileURL()
-            guard let data = try? Data(contentsOf: fileURL) else {
+            guard let data = try? Data(contentsOf: Self.connectionFileURL()) else {
                 return PersistedData()
             }
             let decodedData = try JSONDecoder().decode(PersistedData.self, from: data)
@@ -80,7 +85,7 @@ class ConnectionStore: ObservableObject {
             var persistedData = self.connection.persistedData
             persistedData.settings = settings
             let data = try JSONEncoder().encode(persistedData)
-            let outfile = try Self.fileURL()
+            let outfile = try Self.connectionFileURL()
             try data.write(to: outfile)
         }
         _ = try await task.value
@@ -91,7 +96,7 @@ class ConnectionStore: ObservableObject {
             var persistedData = self.connection.persistedData
             persistedData.lastUpdated = lastUpdated
             let data = try JSONEncoder().encode(persistedData)
-            let outfile = try Self.fileURL()
+            let outfile = try Self.connectionFileURL()
             try data.write(to: outfile)
         }
         _ = try await task.value
