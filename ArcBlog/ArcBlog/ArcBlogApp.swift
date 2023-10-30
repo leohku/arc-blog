@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+struct TransparentEffect: NSViewRepresentable {
+  func makeNSView(context: Self.Context) -> NSView { return NSVisualEffectView() }
+  func updateNSView(_ nsView: NSView, context: Context) { }
+}
+
 @main
 struct ArcBlogApp: App {
     @Environment(\.openWindow) var openWindow
@@ -29,15 +34,6 @@ struct ArcBlogApp: App {
                 openWindow(id: "settings-window")
             }
             .keyboardShortcut(",")
-            Button("Test") {
-                Task {
-                    do {
-                        try await connectionStore.saveLastUpdated(lastUpdated: Date())
-                    } catch {
-                        fatalError(error.localizedDescription)
-                    }
-                }
-            }
             Button("Quit") {
                 NSApplication.shared.terminate(nil)
             }
@@ -45,6 +41,10 @@ struct ArcBlogApp: App {
         }
         Window("Settings", id: "settings-window") {
             SettingsView(connection: $connectionStore.connection)
+                .fixedSize()
+                .background(TransparentEffect().ignoresSafeArea())
         }
+        .windowStyle(.hiddenTitleBar)
+        .windowResizability(.contentSize)
     }
 }

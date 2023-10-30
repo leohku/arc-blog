@@ -1,6 +1,10 @@
 {
   "colors" : [
     {
+      "color" : {
+        "platform" : "watchos",
+        "reference" : "systemPinkColor"
+      },
       "idiom" : "universal"
     }
   ],

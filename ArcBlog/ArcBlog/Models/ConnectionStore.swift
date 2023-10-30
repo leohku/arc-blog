@@ -8,12 +8,10 @@
 import Foundation
 
 struct Connection {
-    var test: String
     var state: ConnectionState
     var persistedData: PersistedData
     
     init(state: ConnectionState = .disconnected) {
-        self.test = "HELLO"
         self.state = state
         self.persistedData = PersistedData()
     }
