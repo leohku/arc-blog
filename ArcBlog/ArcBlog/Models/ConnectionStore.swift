@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Cocoa
 
 struct Connection {
     var state: ConnectionState
@@ -48,17 +49,25 @@ class ConnectionStore: ObservableObject, FilePresenterDelegate {
                 }
                 try await load()
             } catch {
-                fatalError(error.localizedDescription)
+                showFatalErrorAndQuit(
+                    title: ErrorTitle.failedToInitialize.rawValue,
+                    text: error.localizedDescription)
             }
         }
         Task(priority: .medium) {
             do {
                 let fileURL = try Self.storableSidebarURL()
-                // TODO: Error to indicate sidebar file doesn't exist
+                if !FileManager.default.fileExists(atPath: fileURL.path) {
+                    showFatalErrorAndQuit(
+                        title: ErrorTitle.arcIsntInstalled.rawValue,
+                        text: "Can't find Arc's sidebar file, quitting.")
+                }
                 filePresenter = FilePresenter(fileURL: fileURL)
                 filePresenter?.delegate = self
             } catch {
-                fatalError(error.localizedDescription)
+                showFatalErrorAndQuit(
+                    title: ErrorTitle.failedToInitialize.rawValue,
+                    text: error.localizedDescription)
             }
         }
     }
@@ -92,7 +101,7 @@ class ConnectionStore: ObservableObject, FilePresenterDelegate {
         _ = try await task.value
     }
     
-    func load() async throws {
+    private func load() async throws {
         let task = Task<PersistedData, Error> {
             guard let data = try? Data(contentsOf: Self.connectionFileURL()) else {
                 let initData = PersistedData()
@@ -109,25 +118,45 @@ class ConnectionStore: ObservableObject, FilePresenterDelegate {
         // TODO: update connection state (attempt to connect) based on obtained persisted data
     }
     
+    private func saveToDisk(data: PersistedData) throws {
+        let data = try JSONEncoder().encode(data)
+        let outfile = try Self.connectionFileURL()
+        try data.write(to: outfile)
+    }
+    
     func saveSettings(settings: Settings) async throws {
         // TODO: check if new connection is valid first before saving to disk
         let task = Task {
+            DispatchQueue.main.async {
+                self.connection.persistedData.settings = settings
+            }
             var persistedData = self.connection.persistedData
             persistedData.settings = settings
-            let data = try JSONEncoder().encode(persistedData)
-            let outfile = try Self.connectionFileURL()
-            try data.write(to: outfile)
+            try saveToDisk(data: persistedData)
         }
         _ = try await task.value
     }
     
     func saveLastUpdated(lastUpdated: Date) async throws {
         let task = Task {
+            DispatchQueue.main.async {
+                self.connection.persistedData.lastUpdated = lastUpdated
+            }
             var persistedData = self.connection.persistedData
             persistedData.lastUpdated = lastUpdated
-            let data = try JSONEncoder().encode(persistedData)
-            let outfile = try Self.connectionFileURL()
-            try data.write(to: outfile)
+            try saveToDisk(data: persistedData)
+        }
+        _ = try await task.value
+    }
+    
+    func saveStreaming(streaming: Bool) async throws {
+        let task = Task {
+            DispatchQueue.main.async {
+                self.connection.persistedData.streaming = streaming
+            }
+            var persistedData = self.connection.persistedData
+            persistedData.streaming = streaming
+            try saveToDisk(data: persistedData)
         }
         _ = try await task.value
     }

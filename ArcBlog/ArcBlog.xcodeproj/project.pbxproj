@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		D08547D82AF0AD3300B83E40 /* FilePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08547D72AF0AD3300B83E40 /* FilePresenter.swift */; };
 		D08547DA2AF0BAFE00B83E40 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08547D92AF0BAFE00B83E40 /* MenuBarView.swift */; };
+		D08547DC2AF10EE200B83E40 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08547DB2AF10EE200B83E40 /* Errors.swift */; };
 		D0F4482F2AED3EFC00F7E7D5 /* ArcBlogApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F4482E2AED3EFC00F7E7D5 /* ArcBlogApp.swift */; };
 		D0F448312AED3EFC00F7E7D5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F448302AED3EFC00F7E7D5 /* SettingsView.swift */; };
 		D0F448332AED3EFC00F7E7D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0F448322AED3EFC00F7E7D5 /* Assets.xcassets */; };
@@ -19,6 +20,7 @@
 /* Begin PBXFileReference section */
 		D08547D72AF0AD3300B83E40 /* FilePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePresenter.swift; sourceTree = "<group>"; };
 		D08547D92AF0BAFE00B83E40 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		D08547DB2AF10EE200B83E40 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		D0F4482B2AED3EFC00F7E7D5 /* ArcBlog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ArcBlog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0F4482E2AED3EFC00F7E7D5 /* ArcBlogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcBlogApp.swift; sourceTree = "<group>"; };
 		D0F448302AED3EFC00F7E7D5 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -44,6 +46,7 @@
 			isa = PBXGroup;
 			children = (
 				D08547D72AF0AD3300B83E40 /* FilePresenter.swift */,
+				D08547DB2AF10EE200B83E40 /* Errors.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -178,6 +181,7 @@
 				D0F448402AEE109A00F7E7D5 /* ConnectionStore.swift in Sources */,
 				D0F448312AED3EFC00F7E7D5 /* SettingsView.swift in Sources */,
 				D08547D82AF0AD3300B83E40 /* FilePresenter.swift in Sources */,
+				D08547DC2AF10EE200B83E40 /* Errors.swift in Sources */,
 				D0F4482F2AED3EFC00F7E7D5 /* ArcBlogApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

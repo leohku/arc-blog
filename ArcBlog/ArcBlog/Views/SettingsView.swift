@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @Binding var connection: Connection
+    @EnvironmentObject var connectionStore: ConnectionStore
     var body: some View {
         ZStack {
             VStack {
@@ -81,6 +81,6 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(connection: .constant(Connection()))
+        SettingsView()
     }
 }

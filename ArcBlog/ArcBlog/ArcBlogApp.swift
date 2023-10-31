@@ -20,9 +20,11 @@ struct ArcBlogApp: App {
     var body: some Scene {
         MenuBarExtra("Arc Blogs", systemImage: "character.book.closed.fill") {
             MenuBarView()
+                .environmentObject(connectionStore)
         }
         Window("Settings", id: "settings-window") {
-            SettingsView(connection: $connectionStore.connection)
+            SettingsView()
+                .environmentObject(connectionStore)
                 .fixedSize()
                 .background(TransparentEffect().ignoresSafeArea())
         }
