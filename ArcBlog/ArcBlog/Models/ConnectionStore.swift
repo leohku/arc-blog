@@ -27,8 +27,7 @@ enum ConnectionState {
 struct PersistedData: Codable {
     var settings: Settings?
     var lastUpdated: Date?
-    
-    init() {}
+    var streaming: Bool = true
 }
 
 struct Settings: Codable {
@@ -66,7 +65,7 @@ class ConnectionStore: ObservableObject, FilePresenterDelegate {
     
     func fileDidChange() {
         print("Sidebar changed")
-        // TODO: Check if connection is established, if so, read file and send to server
+        // TODO: Check if connection is established, that streaming is on, if so, read file and send to server
     }
                     
     private static func storableSidebarURL() throws -> URL {
@@ -84,10 +83,21 @@ class ConnectionStore: ObservableObject, FilePresenterDelegate {
         try Self.appSupportDirectoryURL().appendingPathComponent("connection.json")
     }
     
+    private func createInitConnectionFile(initData: PersistedData) async throws {
+        let task = Task {
+            let data = try JSONEncoder().encode(initData)
+            let outfile = try Self.connectionFileURL()
+            try data.write(to: outfile)
+        }
+        _ = try await task.value
+    }
+    
     func load() async throws {
         let task = Task<PersistedData, Error> {
             guard let data = try? Data(contentsOf: Self.connectionFileURL()) else {
-                return PersistedData()
+                let initData = PersistedData()
+                _ = try await createInitConnectionFile(initData: initData)
+                return initData
             }
             let decodedData = try JSONDecoder().decode(PersistedData.self, from: data)
             return decodedData
