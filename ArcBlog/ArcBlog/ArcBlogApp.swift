@@ -19,25 +19,7 @@ struct ArcBlogApp: App {
     
     var body: some Scene {
         MenuBarExtra("Arc Blogs", systemImage: "character.book.closed.fill") {
-            Text("Arc Blogs")
-            Text("Last updated: Today 4:33PM")
-            Divider()
-            Button("Turn Off Streaming") {
-            }
-            .keyboardShortcut("t")
-            Button("Publish Manually") {
-            }
-            .keyboardShortcut("p")
-            .disabled(true)
-            Divider()
-            Button("Settings") {
-                openWindow(id: "settings-window")
-            }
-            .keyboardShortcut(",")
-            Button("Quit") {
-                NSApplication.shared.terminate(nil)
-            }
-            .keyboardShortcut("q")
+            MenuBarView()
         }
         Window("Settings", id: "settings-window") {
             SettingsView(connection: $connectionStore.connection)

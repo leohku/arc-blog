@@ -37,8 +37,9 @@ struct Settings: Codable {
     var space: String
 }
 
-class ConnectionStore: ObservableObject {
+class ConnectionStore: ObservableObject, FilePresenterDelegate {
     @Published var connection: Connection = Connection()
+    var filePresenter: FilePresenter?
     
     init() {
         Task(priority: .medium) {
@@ -51,6 +52,27 @@ class ConnectionStore: ObservableObject {
                 fatalError(error.localizedDescription)
             }
         }
+        Task(priority: .medium) {
+            do {
+                let fileURL = try Self.storableSidebarURL()
+                // TODO: Error to indicate sidebar file doesn't exist
+                filePresenter = FilePresenter(fileURL: fileURL)
+                filePresenter?.delegate = self
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        }
+    }
+    
+    func fileDidChange() {
+        print("Sidebar changed")
+        // TODO: Check if connection is established, if so, read file and send to server
+    }
+                    
+    private static func storableSidebarURL() throws -> URL {
+        try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            .appendingPathComponent("Arc")
+            .appendingPathComponent("StorableSidebar.json")
     }
     
     private static func appSupportDirectoryURL() throws -> URL {
