@@ -10,6 +10,10 @@
 		D08547D82AF0AD3300B83E40 /* FilePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08547D72AF0AD3300B83E40 /* FilePresenter.swift */; };
 		D08547DA2AF0BAFE00B83E40 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08547D92AF0BAFE00B83E40 /* MenuBarView.swift */; };
 		D08547DC2AF10EE200B83E40 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08547DB2AF10EE200B83E40 /* Errors.swift */; };
+		D08547DE2AF1270600B83E40 /* SidebarStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08547DD2AF1270600B83E40 /* SidebarStore.swift */; };
+		D08547E12AF12BF400B83E40 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = D08547E02AF12BF400B83E40 /* SwiftyJSON */; };
+		D08547E42AF133AE00B83E40 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08547E32AF133AE00B83E40 /* Connection.swift */; };
+		D08547E62AF1348400B83E40 /* Sidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08547E52AF1348400B83E40 /* Sidebar.swift */; };
 		D0F4482F2AED3EFC00F7E7D5 /* ArcBlogApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F4482E2AED3EFC00F7E7D5 /* ArcBlogApp.swift */; };
 		D0F448312AED3EFC00F7E7D5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F448302AED3EFC00F7E7D5 /* SettingsView.swift */; };
 		D0F448332AED3EFC00F7E7D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D0F448322AED3EFC00F7E7D5 /* Assets.xcassets */; };
@@ -21,6 +25,9 @@
 		D08547D72AF0AD3300B83E40 /* FilePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePresenter.swift; sourceTree = "<group>"; };
 		D08547D92AF0BAFE00B83E40 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
 		D08547DB2AF10EE200B83E40 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		D08547DD2AF1270600B83E40 /* SidebarStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarStore.swift; sourceTree = "<group>"; };
+		D08547E32AF133AE00B83E40 /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
+		D08547E52AF1348400B83E40 /* Sidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sidebar.swift; sourceTree = "<group>"; };
 		D0F4482B2AED3EFC00F7E7D5 /* ArcBlog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ArcBlog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0F4482E2AED3EFC00F7E7D5 /* ArcBlogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcBlogApp.swift; sourceTree = "<group>"; };
 		D0F448302AED3EFC00F7E7D5 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -36,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D08547E12AF12BF400B83E40 /* SwiftyJSON in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -49,6 +57,15 @@
 				D08547DB2AF10EE200B83E40 /* Errors.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		D08547E22AF1339E00B83E40 /* Types */ = {
+			isa = PBXGroup;
+			children = (
+				D08547E32AF133AE00B83E40 /* Connection.swift */,
+				D08547E52AF1348400B83E40 /* Sidebar.swift */,
+			);
+			path = Types;
 			sourceTree = "<group>";
 		};
 		D0F448222AED3EFC00F7E7D5 = {
@@ -75,6 +92,7 @@
 				D0F448412AEEA70F00F7E7D5 /* Views */,
 				D0F4483E2AEE106400F7E7D5 /* Models */,
 				D08547D62AF0AD1D00B83E40 /* Helpers */,
+				D08547E22AF1339E00B83E40 /* Types */,
 				D0F448322AED3EFC00F7E7D5 /* Assets.xcassets */,
 				D0F448372AED3EFC00F7E7D5 /* ArcBlog.entitlements */,
 				D0F448342AED3EFC00F7E7D5 /* Preview Content */,
@@ -94,6 +112,7 @@
 			isa = PBXGroup;
 			children = (
 				D0F4483F2AEE109A00F7E7D5 /* ConnectionStore.swift */,
+				D08547DD2AF1270600B83E40 /* SidebarStore.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -123,6 +142,9 @@
 			dependencies = (
 			);
 			name = ArcBlog;
+			packageProductDependencies = (
+				D08547E02AF12BF400B83E40 /* SwiftyJSON */,
+			);
 			productName = ArcBlog;
 			productReference = D0F4482B2AED3EFC00F7E7D5 /* ArcBlog.app */;
 			productType = "com.apple.product-type.application";
@@ -151,6 +173,9 @@
 				Base,
 			);
 			mainGroup = D0F448222AED3EFC00F7E7D5;
+			packageReferences = (
+				D08547DF2AF12BF400B83E40 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
+			);
 			productRefGroup = D0F4482C2AED3EFC00F7E7D5 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -177,11 +202,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D08547DE2AF1270600B83E40 /* SidebarStore.swift in Sources */,
 				D08547DA2AF0BAFE00B83E40 /* MenuBarView.swift in Sources */,
 				D0F448402AEE109A00F7E7D5 /* ConnectionStore.swift in Sources */,
 				D0F448312AED3EFC00F7E7D5 /* SettingsView.swift in Sources */,
 				D08547D82AF0AD3300B83E40 /* FilePresenter.swift in Sources */,
 				D08547DC2AF10EE200B83E40 /* Errors.swift in Sources */,
+				D08547E42AF133AE00B83E40 /* Connection.swift in Sources */,
+				D08547E62AF1348400B83E40 /* Sidebar.swift in Sources */,
 				D0F4482F2AED3EFC00F7E7D5 /* ArcBlogApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -384,6 +412,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D08547DF2AF12BF400B83E40 /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftyJSON/SwiftyJSON.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D08547E02AF12BF400B83E40 /* SwiftyJSON */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D08547DF2AF12BF400B83E40 /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
+			productName = SwiftyJSON;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D0F448232AED3EFC00F7E7D5 /* Project object */;
 }

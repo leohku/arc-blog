@@ -6,38 +6,8 @@
 //
 
 import Foundation
-import Cocoa
 
-struct Connection {
-    var state: ConnectionState
-    var persistedData: PersistedData
-    
-    init(state: ConnectionState = .disconnected) {
-        self.state = state
-        self.persistedData = PersistedData()
-    }
-}
-
-enum ConnectionState {
-    case disconnected
-    case connecting
-    case connected
-    case failed(error: Error)
-}
-
-struct PersistedData: Codable {
-    var settings: Settings?
-    var lastUpdated: Date?
-    var streaming: Bool = true
-}
-
-struct Settings: Codable {
-    var serverUrl: URL
-    var serverPassword: String
-    var space: String
-}
-
-class ConnectionStore: ObservableObject, FilePresenterDelegate {
+class ConnectionStore: ObservableObject {
     @Published var connection: Connection = Connection()
     var filePresenter: FilePresenter?
     
@@ -54,33 +24,6 @@ class ConnectionStore: ObservableObject, FilePresenterDelegate {
                     text: error.localizedDescription)
             }
         }
-        Task(priority: .medium) {
-            do {
-                let fileURL = try Self.storableSidebarURL()
-                if !FileManager.default.fileExists(atPath: fileURL.path) {
-                    showFatalErrorAndQuit(
-                        title: ErrorTitle.arcIsntInstalled.rawValue,
-                        text: "Can't find Arc's sidebar file, quitting.")
-                }
-                filePresenter = FilePresenter(fileURL: fileURL)
-                filePresenter?.delegate = self
-            } catch {
-                showFatalErrorAndQuit(
-                    title: ErrorTitle.failedToInitialize.rawValue,
-                    text: error.localizedDescription)
-            }
-        }
-    }
-    
-    func fileDidChange() {
-        print("Sidebar changed")
-        // TODO: Check if connection is established, that streaming is on, if so, read file and send to server
-    }
-                    
-    private static func storableSidebarURL() throws -> URL {
-        try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-            .appendingPathComponent("Arc")
-            .appendingPathComponent("StorableSidebar.json")
     }
     
     private static func appSupportDirectoryURL() throws -> URL {

@@ -16,6 +16,7 @@ struct TransparentEffect: NSViewRepresentable {
 struct ArcBlogApp: App {
     @Environment(\.openWindow) var openWindow
     @StateObject private var connectionStore = ConnectionStore()
+    @StateObject private var sidebarStore = SidebarStore()
     
     var body: some Scene {
         MenuBarExtra("Arc Blogs", systemImage: "character.book.closed.fill") {
