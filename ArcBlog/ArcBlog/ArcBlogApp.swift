@@ -60,7 +60,7 @@ struct ArcBlogApp: App {
     private func launchOnboarding() throws {
         let alert = NSAlert()
         alert.messageText = "Launch Arc Blogs on login?"
-        alert.informativeText = "This ensures your blog stays up to date. You can always add it manually later."
+        alert.informativeText = "This ensures your blog stays up to date. You can always change it later."
         alert.addButton(withTitle: "Yes")
         alert.addButton(withTitle: "No")
         let modalResult = alert.runModal()

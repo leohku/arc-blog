@@ -15,6 +15,8 @@ struct SettingsView: View {
     @State var space: String = ""
     
     var body: some View {
+        let connectionState = connectionStore.connection.state
+        let isConnectingOrConnected = [ConnectionState.connecting, ConnectionState.connected].contains(connectionState)
         ZStack {
             VStack {
                 Image(systemName: "character.book.closed.fill")
@@ -41,6 +43,7 @@ struct SettingsView: View {
                     ) {
                         Text("Server URL")
                     }
+                    .disabled(isConnectingOrConnected)
                     .disableAutocorrection(true)
                     .textFieldStyle(.roundedBorder)
                     .padding(.bottom, 4)
@@ -50,6 +53,7 @@ struct SettingsView: View {
                     ) {
                         Text("Secret Key")
                     }
+                    .disabled(isConnectingOrConnected)
                     .disableAutocorrection(true)
                     .textFieldStyle(.roundedBorder)
                     .padding(.bottom, 4)
@@ -58,10 +62,15 @@ struct SettingsView: View {
                             Text($0.title).tag($0.title)
                         }
                     }
+                    .disabled(isConnectingOrConnected)
                     .pickerStyle(.menu)
                     .padding(.top, 1)
                 }
-                Button("Connect") {
+                Button(
+                    connectionState == ConnectionState.connected ?
+                        "Disconnect" :
+                        "Connect"
+                ) {
                     // TODO: Refine with disconnect logic and better error message
                     Task {
                         do {
@@ -75,6 +84,7 @@ struct SettingsView: View {
                         }
                     }
                 }
+                .disabled(connectionState == ConnectionState.connecting)
                 .frame(maxWidth: .infinity)
                 .padding(.top, 8)
                 Divider()
@@ -83,8 +93,8 @@ struct SettingsView: View {
                 HStack {
                     Image(systemName: "circle.fill")
                         .imageScale(.small)
-                        .foregroundColor(connectionStore.connection.state.statusColor())
-                    Text(connectionStore.connection.state.statusText())
+                        .foregroundColor(connectionState.statusColor())
+                    Text(connectionState.statusText())
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }

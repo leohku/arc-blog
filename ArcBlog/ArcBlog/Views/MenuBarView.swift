@@ -10,22 +10,37 @@ import SwiftUI
 struct MenuBarView: View {
     @Environment(\.openWindow) var openWindow
     @EnvironmentObject var connectionStore: ConnectionStore
+    let todayFormatter: DateFormatter
     let formatter: DateFormatter
     
+    
     init() {
+        todayFormatter = DateFormatter()
+        todayFormatter.dateStyle = .none
+        todayFormatter.timeStyle = .short
         formatter = DateFormatter()
         formatter.dateStyle = .short
         formatter.timeStyle = .short
+    }
+    
+    func getLastUpdatedDateString(dateOptional: Date?) -> String {
+        if let lastUpdated = dateOptional {
+            let calendar = Calendar.current
+            if calendar.isDateInToday(lastUpdated) {
+                return "Today, \(todayFormatter.string(from: lastUpdated))"
+            } else {
+                return formatter.string(from: lastUpdated)
+            }
+        } else {
+            return "Never"
+        }
     }
 
     var body: some View {
         let persistedData = connectionStore.connection.persistedData
         let connectionState = connectionStore.connection.state
-        let lastUpdatedDateString =
-            persistedData.lastUpdated != nil ?
-            formatter.string(from: persistedData.lastUpdated!) :
-            "Never"
-        
+        let lastUpdatedDateString = getLastUpdatedDateString(dateOptional: persistedData.lastUpdated)
+
         Text(connectionState.statusText())
         Text("Last updated: \(lastUpdatedDateString)")
         Divider()
