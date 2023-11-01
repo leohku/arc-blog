@@ -31,7 +31,7 @@ struct PersistedData: Codable {
 }
 
 struct Settings: Codable {
-    var serverUrl: URL
-    var serverPassword: String
+    var serverURL: String
+    var secretKey: String
     var space: String
 }

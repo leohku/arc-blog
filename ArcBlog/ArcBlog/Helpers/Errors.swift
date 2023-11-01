@@ -25,6 +25,7 @@ enum ErrorTitle: String {
     case arcIsntInstalled = "Arc isn't Installed"
     case unableToSave = "Unable to Save"
     case unableToParseSidebar = "Unable to Parse Sidebar File"
+    case unableToConnect = "Unable to Connect"
 }
 
 func showError(title: String, text: String) -> Void {

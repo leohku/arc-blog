@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ConnectionStore: ObservableObject {
+class ConnectionStore: ObservableObject, FilePresenterDelegate {
     @Published var connection: Connection = Connection()
     var filePresenter: FilePresenter?
     
@@ -15,6 +15,17 @@ class ConnectionStore: ObservableObject {
         Task(priority: .medium) {
             do {
                 try await load()
+            } catch {
+                showFatalErrorAndQuit(
+                    title: ErrorTitle.failedToInitialize.rawValue,
+                    text: error.localizedDescription)
+            }
+        }
+        Task(priority: .medium) {
+            do {
+                let fileURL = try sidebarFileURL()
+                filePresenter = FilePresenter(fileURL: fileURL)
+                filePresenter?.delegate = self
             } catch {
                 showFatalErrorAndQuit(
                     title: ErrorTitle.failedToInitialize.rawValue,
@@ -46,11 +57,15 @@ class ConnectionStore: ObservableObject {
         DispatchQueue.main.async {
             self.connection.persistedData = persistedData
         }
-        // TODO: update connection state (attempt to connect) based on obtained persisted data
+        // TODO: update connection state (attempt to connect) based on obtained persisted data, if streaming is on also publish
+    }
+    
+    func fileDidChange() {
+        // TODO: check if connection is established and streaming is on, then if there are updates
+        print("New version of parsed sidebar here")
     }
     
     func saveSettings(settings: Settings) async throws {
-        // TODO: check if new connection is valid first before saving to disk
         let task = Task {
             DispatchQueue.main.async {
                 self.connection.persistedData.settings = settings
@@ -62,6 +77,7 @@ class ConnectionStore: ObservableObject {
                 url: connectionFileURL())
         }
         _ = try await task.value
+        // TODO: try to establish connection and publish if streaming is on, only establish connection if streaming is off
     }
     
     func saveLastUpdated(lastUpdated: Date) async throws {

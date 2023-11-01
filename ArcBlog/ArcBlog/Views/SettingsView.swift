@@ -9,6 +9,11 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var connectionStore: ConnectionStore
+    @EnvironmentObject var sidebarStore: SidebarStore
+    @State var serverURL: String = ""
+    @State var secretKey: String = ""
+    @State var space: String = ""
+    
     var body: some View {
         ZStack {
             VStack {
@@ -20,7 +25,7 @@ struct SettingsView: View {
                 Text("Arc Blogs")
                     .font(.system(size: 28))
                     .padding(.bottom, 4)
-                Text("Space → Blog")
+                Text("v0.1 Beta")
                     .foregroundColor(.gray)
                     .padding(.bottom, 30)
                 Spacer()
@@ -31,7 +36,7 @@ struct SettingsView: View {
                 Spacer()
                 Form {
                     TextField(
-                        text: .constant(""),
+                        text: $serverURL,
                         prompt: Text("Required")
                     ) {
                         Text("Server URL")
@@ -40,7 +45,7 @@ struct SettingsView: View {
                     .textFieldStyle(.roundedBorder)
                     .padding(.bottom, 4)
                     SecureField(
-                        text: .constant(""),
+                        text: $secretKey,
                         prompt: Text("Required")
                     ) {
                         Text("Secret Key")
@@ -48,15 +53,27 @@ struct SettingsView: View {
                     .disableAutocorrection(true)
                     .textFieldStyle(.roundedBorder)
                     .padding(.bottom, 4)
-                    Picker("Space", selection: .constant("Personal")) {
-                        Text("Personal")
-                        Text("Work")
-                        Text("Blog")
+                    Picker("Space", selection: $space) {
+                        ForEach(sidebarStore.sidebar.spaces, id: \.self) {
+                            Text($0.title).tag($0.title)
+                        }
                     }
                     .pickerStyle(.menu)
                     .padding(.top, 1)
                 }
                 Button("Connect") {
+                    // TODO: Refine with disconnect logic and better error message
+                    Task {
+                        do {
+                            try await connectionStore.saveSettings(settings: Settings(
+                                serverURL: $serverURL.wrappedValue,
+                                secretKey: $secretKey.wrappedValue,
+                                space: $space.wrappedValue))
+                        } catch {
+                            showError(title: ErrorTitle.unableToConnect.rawValue,
+                                      text: "Unable to connect to server")
+                        }
+                    }
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.top, 8)
@@ -75,6 +92,22 @@ struct SettingsView: View {
         .padding()
         .navigationTitle("Arc Blogs")
         .frame(width: 300, height: 370)
+        .onAppear(perform: {
+            let persistedData = connectionStore.connection.persistedData
+            if persistedData.settings != nil {
+                self.serverURL = persistedData.settings!.serverURL
+                self.secretKey = persistedData.settings!.secretKey
+                if (sidebarStore.sidebar.spaces
+                    .map { $0.title }
+                    .contains(persistedData.settings!.space)) {
+                        self.space = persistedData.settings!.space
+                    } else {
+                        self.space = sidebarStore.sidebar.spaces.count > 0 ? sidebarStore.sidebar.spaces[0].title : ""
+                    }
+            } else {
+                self.space = sidebarStore.sidebar.spaces.count > 0 ? sidebarStore.sidebar.spaces[0].title : ""
+            }
+        })
     }
 }
 
@@ -82,5 +115,7 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
+            .environmentObject(ConnectionStore())
+            .environmentObject(SidebarStore())
     }
 }

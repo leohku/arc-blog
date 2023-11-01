@@ -22,6 +22,7 @@ class SidebarStore: ObservableObject, FilePresenterDelegate {
                 }
                 filePresenter = FilePresenter(fileURL: fileURL)
                 filePresenter?.delegate = self
+                fileDidChange()
             } catch {
                 showFatalErrorAndQuit(
                     title: ErrorTitle.failedToInitialize.rawValue,
@@ -31,17 +32,18 @@ class SidebarStore: ObservableObject, FilePresenterDelegate {
     }
     
     func fileDidChange() {
-        do {
-            let content = try String(contentsOfFile: storableSidebarURL().path, encoding: .utf8)
-            let sidebar: Sidebar = try SidebarParser.parse(content: content)
-            try saveEncodableToDisk(
-                data: sidebar,
-                url: sidebarFileURL())
-            
-        } catch {
-            showError(
-                title: ErrorTitle.unableToParseSidebar.rawValue,
-                text: error.localizedDescription)
+        DispatchQueue.main.async {
+            do {
+                let content = try String(contentsOfFile: storableSidebarURL().path, encoding: .utf8)
+                self.sidebar = try SidebarParser.parse(content: content)
+                try saveEncodableToDisk(
+                    data: self.sidebar,
+                    url: sidebarFileURL())
+            } catch {
+                showError(
+                    title: ErrorTitle.unableToParseSidebar.rawValue,
+                    text: error.localizedDescription)
+            }
         }
     }
 }

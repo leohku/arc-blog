@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Sidebar: Encodable {
+struct Sidebar: Encodable, Hashable {
     var spaces: [Space]
     
     init() {
@@ -15,16 +15,16 @@ struct Sidebar: Encodable {
     }
 }
 
-struct Profile: Encodable {
+struct Profile: Encodable, Hashable {
     var isDefault: Bool
     var directoryBasename: String?
 }
 
-enum SidebarNodeType: String, Encodable {
+enum SidebarNodeType: String, Encodable, Hashable {
     case tab, arcDocument, easel, list, itemContainer, splitView
 }
 
-struct SidebarNode: Encodable {
+struct SidebarNode: Encodable, Hashable {
     var id: String
     var type: SidebarNodeType
     var title: String?
@@ -34,7 +34,7 @@ struct SidebarNode: Encodable {
     var children: [SidebarNode]?
 }
 
-struct Space: Encodable {
+struct Space: Encodable, Hashable {
     var id: String
     var title: String
     var profile: Profile

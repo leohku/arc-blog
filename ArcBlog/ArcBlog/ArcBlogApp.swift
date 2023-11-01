@@ -38,6 +38,7 @@ struct ArcBlogApp: App {
         Window("Settings", id: "settings-window") {
             SettingsView()
                 .environmentObject(connectionStore)
+                .environmentObject(sidebarStore)
                 .fixedSize()
                 .background(TransparentEffect().ignoresSafeArea())
         }
