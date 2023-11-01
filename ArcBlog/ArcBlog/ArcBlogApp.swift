@@ -18,6 +18,18 @@ struct ArcBlogApp: App {
     @StateObject private var connectionStore = ConnectionStore()
     @StateObject private var sidebarStore = SidebarStore()
     
+    init() {
+        do {
+            if try !FileManager.default.fileExists(atPath: appSupportDirectoryURL().path) {
+                try FileManager.default.createDirectory(atPath: appSupportDirectoryURL().path, withIntermediateDirectories: false, attributes: nil)
+            }
+        } catch {
+            showFatalErrorAndQuit(
+                title: ErrorTitle.failedToInitialize.rawValue,
+                text: error.localizedDescription)
+        }
+    }
+    
     var body: some Scene {
         MenuBarExtra("Arc Blogs", systemImage: "character.book.closed.fill") {
             MenuBarView()

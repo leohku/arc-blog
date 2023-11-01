@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D08157382AF2104D00F93850 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08157372AF2104D00F93850 /* Common.swift */; };
+		D081573A2AF2127C00F93850 /* SidebarParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08157392AF2127C00F93850 /* SidebarParser.swift */; };
 		D08547D82AF0AD3300B83E40 /* FilePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08547D72AF0AD3300B83E40 /* FilePresenter.swift */; };
 		D08547DA2AF0BAFE00B83E40 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08547D92AF0BAFE00B83E40 /* MenuBarView.swift */; };
 		D08547DC2AF10EE200B83E40 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08547DB2AF10EE200B83E40 /* Errors.swift */; };
@@ -22,6 +24,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D08157372AF2104D00F93850 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		D08157392AF2127C00F93850 /* SidebarParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarParser.swift; sourceTree = "<group>"; };
 		D08547D72AF0AD3300B83E40 /* FilePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePresenter.swift; sourceTree = "<group>"; };
 		D08547D92AF0BAFE00B83E40 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
 		D08547DB2AF10EE200B83E40 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
@@ -53,7 +57,9 @@
 		D08547D62AF0AD1D00B83E40 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				D08157372AF2104D00F93850 /* Common.swift */,
 				D08547D72AF0AD3300B83E40 /* FilePresenter.swift */,
+				D08157392AF2127C00F93850 /* SidebarParser.swift */,
 				D08547DB2AF10EE200B83E40 /* Errors.swift */,
 			);
 			path = Helpers;
@@ -203,6 +209,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D08547DE2AF1270600B83E40 /* SidebarStore.swift in Sources */,
+				D081573A2AF2127C00F93850 /* SidebarParser.swift in Sources */,
 				D08547DA2AF0BAFE00B83E40 /* MenuBarView.swift in Sources */,
 				D0F448402AEE109A00F7E7D5 /* ConnectionStore.swift in Sources */,
 				D0F448312AED3EFC00F7E7D5 /* SettingsView.swift in Sources */,
@@ -210,6 +217,7 @@
 				D08547DC2AF10EE200B83E40 /* Errors.swift in Sources */,
 				D08547E42AF133AE00B83E40 /* Connection.swift in Sources */,
 				D08547E62AF1348400B83E40 /* Sidebar.swift in Sources */,
+				D08157382AF2104D00F93850 /* Common.swift in Sources */,
 				D0F4482F2AED3EFC00F7E7D5 /* ArcBlogApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

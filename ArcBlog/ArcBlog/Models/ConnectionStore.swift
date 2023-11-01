@@ -14,9 +14,6 @@ class ConnectionStore: ObservableObject {
     init() {
         Task(priority: .medium) {
             do {
-                if try !FileManager.default.fileExists(atPath: Self.appSupportDirectoryURL().path) {
-                    try FileManager.default.createDirectory(atPath: Self.appSupportDirectoryURL().path, withIntermediateDirectories: false, attributes: nil)
-                }
                 try await load()
             } catch {
                 showFatalErrorAndQuit(
@@ -26,19 +23,10 @@ class ConnectionStore: ObservableObject {
         }
     }
     
-    private static func appSupportDirectoryURL() throws -> URL {
-        try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-            .appendingPathComponent("Arc Blog")
-    }
-    
-    private static func connectionFileURL() throws -> URL {
-        try Self.appSupportDirectoryURL().appendingPathComponent("connection.json")
-    }
-    
     private func createInitConnectionFile(initData: PersistedData) async throws {
         let task = Task {
             let data = try JSONEncoder().encode(initData)
-            let outfile = try Self.connectionFileURL()
+            let outfile = try connectionFileURL()
             try data.write(to: outfile)
         }
         _ = try await task.value
@@ -46,7 +34,7 @@ class ConnectionStore: ObservableObject {
     
     private func load() async throws {
         let task = Task<PersistedData, Error> {
-            guard let data = try? Data(contentsOf: Self.connectionFileURL()) else {
+            guard let data = try? Data(contentsOf: connectionFileURL()) else {
                 let initData = PersistedData()
                 _ = try await createInitConnectionFile(initData: initData)
                 return initData
@@ -61,12 +49,6 @@ class ConnectionStore: ObservableObject {
         // TODO: update connection state (attempt to connect) based on obtained persisted data
     }
     
-    private func saveToDisk(data: PersistedData) throws {
-        let data = try JSONEncoder().encode(data)
-        let outfile = try Self.connectionFileURL()
-        try data.write(to: outfile)
-    }
-    
     func saveSettings(settings: Settings) async throws {
         // TODO: check if new connection is valid first before saving to disk
         let task = Task {
@@ -75,7 +57,9 @@ class ConnectionStore: ObservableObject {
             }
             var persistedData = self.connection.persistedData
             persistedData.settings = settings
-            try saveToDisk(data: persistedData)
+            try saveEncodableToDisk(
+                data: persistedData,
+                url: connectionFileURL())
         }
         _ = try await task.value
     }
@@ -87,7 +71,9 @@ class ConnectionStore: ObservableObject {
             }
             var persistedData = self.connection.persistedData
             persistedData.lastUpdated = lastUpdated
-            try saveToDisk(data: persistedData)
+            try saveEncodableToDisk(
+                data: persistedData,
+                url: connectionFileURL())
         }
         _ = try await task.value
     }
@@ -99,7 +85,9 @@ class ConnectionStore: ObservableObject {
             }
             var persistedData = self.connection.persistedData
             persistedData.streaming = streaming
-            try saveToDisk(data: persistedData)
+            try saveEncodableToDisk(
+                data: persistedData,
+                url: connectionFileURL())
         }
         _ = try await task.value
     }

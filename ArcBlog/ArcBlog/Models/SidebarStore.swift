@@ -14,7 +14,7 @@ class SidebarStore: ObservableObject, FilePresenterDelegate {
     init() {
         Task(priority: .medium) {
             do {
-                let fileURL = try Self.storableSidebarURL()
+                let fileURL = try storableSidebarURL()
                 if !FileManager.default.fileExists(atPath: fileURL.path) {
                     showFatalErrorAndQuit(
                         title: ErrorTitle.arcIsntInstalled.rawValue,
@@ -31,15 +31,19 @@ class SidebarStore: ObservableObject, FilePresenterDelegate {
     }
     
     func fileDidChange() {
-        print("Sidebar changed")
-        // TODO: read and parse file, save output (if first time), else compare before save, if different notify ConnectionStore
-        // (it will then check if connection is established and streaming is on)
-        
-    }
-                    
-    private static func storableSidebarURL() throws -> URL {
-        try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
-            .appendingPathComponent("Arc")
-            .appendingPathComponent("StorableSidebar.json")
+        // TODO: read and parse file, save output
+        // (ConnectionStore will then check if there are updates, connection is established and streaming is on)
+        do {
+            let content = try String(contentsOfFile: storableSidebarURL().path, encoding: .utf8)
+            let sidebar: Sidebar = try SidebarParser.parse(content: content)
+            try saveEncodableToDisk(
+                data: sidebar,
+                url: sidebarFileURL())
+            
+        } catch {
+            showError(
+                title: ErrorTitle.unableToParseSidebar.rawValue,
+                text: error.localizedDescription)
+        }
     }
 }
