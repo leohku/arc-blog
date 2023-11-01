@@ -83,8 +83,8 @@ struct SettingsView: View {
                 HStack {
                     Image(systemName: "circle.fill")
                         .imageScale(.small)
-                        .foregroundColor(.gray)
-                    Text("Not connected")
+                        .foregroundColor(connectionStore.connection.state.statusColor())
+                    Text(connectionStore.connection.state.statusText())
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }

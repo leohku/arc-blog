@@ -19,19 +19,20 @@ struct MenuBarView: View {
     }
 
     var body: some View {
-        Text("Arc Blogs")
+        let persistedData = connectionStore.connection.persistedData
+        let connectionState = connectionStore.connection.state
         let lastUpdatedDateString =
-            connectionStore.connection.persistedData.lastUpdated != nil ?
-            formatter.string(from: connectionStore.connection.persistedData.lastUpdated!) :
+            persistedData.lastUpdated != nil ?
+            formatter.string(from: persistedData.lastUpdated!) :
             "Never"
+        
+        Text(connectionState.statusText())
         Text("Last updated: \(lastUpdatedDateString)")
         Divider()
-        let streaming =
-            connectionStore.connection.persistedData.streaming
-        Button("Turn \(streaming ? "Off" : "On") Streaming") {
+        Button("Turn \(persistedData.streaming ? "Off" : "On") Streaming") {
             Task {
                 do {
-                    try await connectionStore.saveStreaming(streaming: !streaming)
+                    try await connectionStore.saveStreaming(streaming: !persistedData.streaming)
                 } catch {
                     showError(
                         title: ErrorTitle.unableToSave.rawValue,
@@ -42,14 +43,14 @@ struct MenuBarView: View {
         .keyboardShortcut("t")
         Button("Publish Manually") {
         }
-        .disabled(streaming)
+        .disabled(persistedData.streaming || connectionState == ConnectionState.disconnected)
         .keyboardShortcut("p")
         Divider()
         Button("Settings") {
             openWindow(id: "settings-window")
         }
         .keyboardShortcut(",")
-        Button("Quit") {
+        Button("Quit Arc Blogs") {
             NSApplication.shared.terminate(nil)
         }
         .keyboardShortcut("q")

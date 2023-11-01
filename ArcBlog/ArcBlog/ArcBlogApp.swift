@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ServiceManagement
 
 struct TransparentEffect: NSViewRepresentable {
   func makeNSView(context: Self.Context) -> NSView { return NSVisualEffectView() }
@@ -17,11 +18,16 @@ struct ArcBlogApp: App {
     @Environment(\.openWindow) var openWindow
     @StateObject private var connectionStore = ConnectionStore()
     @StateObject private var sidebarStore = SidebarStore()
+    @State private var firstLaunchExperience: Bool = false
     
     init() {
         do {
             if try !FileManager.default.fileExists(atPath: appSupportDirectoryURL().path) {
-                try FileManager.default.createDirectory(atPath: appSupportDirectoryURL().path, withIntermediateDirectories: false, attributes: nil)
+                _firstLaunchExperience = State(initialValue: true)
+                try FileManager.default.createDirectory(
+                    atPath: appSupportDirectoryURL().path,
+                    withIntermediateDirectories: false,
+                    attributes: nil)
             }
         } catch {
             showFatalErrorAndQuit(
@@ -34,6 +40,11 @@ struct ArcBlogApp: App {
         MenuBarExtra("Arc Blogs", systemImage: "character.book.closed.fill") {
             MenuBarView()
                 .environmentObject(connectionStore)
+                .task {
+                    Task {
+                        if firstLaunchExperience { try launchOnboarding() }
+                    }
+                }
         }
         Window("Settings", id: "settings-window") {
             SettingsView()
@@ -44,5 +55,18 @@ struct ArcBlogApp: App {
         }
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentSize)
+    }
+    
+    private func launchOnboarding() throws {
+        let alert = NSAlert()
+        alert.messageText = "Launch Arc Blogs on login?"
+        alert.informativeText = "This ensures your blog stays up to date. You can always add it manually later."
+        alert.addButton(withTitle: "Yes")
+        alert.addButton(withTitle: "No")
+        let modalResult = alert.runModal()
+        if modalResult == .alertFirstButtonReturn {
+            try SMAppService.mainApp.register()
+        }
+        openWindow(id: "settings-window")
     }
 }
