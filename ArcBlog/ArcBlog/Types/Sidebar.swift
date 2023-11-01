@@ -27,8 +27,10 @@ enum SidebarNodeType: String, Encodable {
 struct SidebarNode: Encodable {
     var id: String
     var type: SidebarNodeType
-    var title: String
+    var title: String?
     var url: String?
+    var documentId: String?
+    var easelId: String?
     var children: [SidebarNode]?
 }
 

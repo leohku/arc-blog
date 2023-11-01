@@ -31,8 +31,6 @@ class SidebarStore: ObservableObject, FilePresenterDelegate {
     }
     
     func fileDidChange() {
-        // TODO: read and parse file, save output
-        // (ConnectionStore will then check if there are updates, connection is established and streaming is on)
         do {
             let content = try String(contentsOfFile: storableSidebarURL().path, encoding: .utf8)
             let sidebar: Sidebar = try SidebarParser.parse(content: content)

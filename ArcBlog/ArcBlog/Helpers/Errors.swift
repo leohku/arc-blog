@@ -8,6 +8,18 @@
 import Foundation
 import Cocoa
 
+struct RuntimeError: LocalizedError {
+    let description: String
+
+    init(_ description: String) {
+        self.description = description
+    }
+
+    var errorDescription: String? {
+        description
+    }
+}
+
 enum ErrorTitle: String {
     case failedToInitialize = "Failed to Initialize"
     case arcIsntInstalled = "Arc isn't Installed"
