@@ -26,6 +26,8 @@ enum ErrorTitle: String {
     case unableToSave = "Unable to Save"
     case unableToParseSidebar = "Unable to Parse Sidebar File"
     case unableToConnect = "Unable to Connect"
+    case unableToDisconnect = "Unable to Disconnect"
+    case unableToUpdateBlog = "Unable to Update Blog"
 }
 
 func showError(title: String, text: String) -> Void {

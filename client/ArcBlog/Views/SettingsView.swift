@@ -17,6 +17,22 @@ struct SettingsView: View {
     var body: some View {
         let connectionState = connectionStore.connection.state
         let isConnectingOrConnected = [ConnectionState.connecting, ConnectionState.connected].contains(connectionState)
+        let isDisconnectedOrFailed = [ConnectionState.disconnected, ConnectionState.failed].contains(connectionState)
+        let auxiliaryText: String = ({
+            switch connectionState {
+                case ConnectionState.connected:
+                    let streaming = connectionStore.connection.persistedData.streaming
+                    return "Streaming \(streaming ? "On" : "Off")"
+                case ConnectionState.failed:
+                    if connectionStore.connection.error != nil {
+                        return connectionStore.connection.error!.localizedDescription
+                    } else {
+                        return ""
+                    }
+                default:
+                    return ""
+            }
+        }())
         ZStack {
             VStack {
                 Image(systemName: "character.book.closed.fill")
@@ -71,16 +87,26 @@ struct SettingsView: View {
                         "Disconnect" :
                         "Connect"
                 ) {
-                    // TODO: Refine with disconnect logic and better error message
-                    Task {
-                        do {
-                            try await connectionStore.saveSettings(settings: Settings(
-                                serverURL: $serverURL.wrappedValue,
-                                secretKey: $secretKey.wrappedValue,
-                                space: $space.wrappedValue))
-                        } catch {
-                            showError(title: ErrorTitle.unableToConnect.rawValue,
-                                      text: "Unable to connect to server")
+                    if (isDisconnectedOrFailed) {
+                        Task {
+                            do {
+                                try await connectionStore.connect(settings: Settings(
+                                    serverURL: $serverURL.wrappedValue,
+                                    secretKey: $secretKey.wrappedValue,
+                                    space: $space.wrappedValue))
+                            } catch {
+                                showError(title: ErrorTitle.unableToConnect.rawValue,
+                                          text: error.localizedDescription)
+                            }
+                        }
+                    } else {
+                        Task {
+                            do {
+                                try await connectionStore.disconnect()
+                            } catch {
+                                showError(title: ErrorTitle.unableToDisconnect.rawValue,
+                                          text: error.localizedDescription)
+                            }
                         }
                     }
                 }
@@ -96,6 +122,7 @@ struct SettingsView: View {
                         .foregroundColor(connectionState.statusColor())
                     Text(connectionState.statusText())
                         .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(auxiliaryText)
                 }
             }
         }
