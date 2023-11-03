@@ -9,7 +9,7 @@ import Foundation
 
 class Publisher {
     private static func makeNetworkRequest(url: String, body: String) async throws {
-        let url = URL(string: "\(url)/api-private/update")!
+        let url = URL(string: "\(url)/arc-blog-admin/update")!
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
