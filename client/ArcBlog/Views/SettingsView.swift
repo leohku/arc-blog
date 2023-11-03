@@ -22,7 +22,7 @@ struct SettingsView: View {
             switch connectionState {
                 case ConnectionState.connected:
                     let streaming = connectionStore.connection.persistedData.streaming
-                    return "Streaming \(streaming ? "On" : "Off")"
+                    return "Streaming \(streaming ? "on" : "off")"
                 case ConnectionState.failed:
                     if connectionStore.connection.error != nil {
                         return connectionStore.connection.error!.localizedDescription

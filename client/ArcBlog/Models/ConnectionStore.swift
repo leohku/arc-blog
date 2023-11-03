@@ -74,10 +74,12 @@ class ConnectionStore: ObservableObject, FilePresenterDelegate {
                     key: self.connection.persistedData.settings!.secretKey
                 )
             } else {
-                try await self.publish(onlyIfNovel: true)
+                try await self.publish(onlyIfNovel: false)
             }
             self.connectionSucceeded()
         } catch {
+            showError(title: ErrorTitle.unableToConnect.rawValue,
+                      text: error.localizedDescription)
             self.connectionFailed(error: error)
         }
     }

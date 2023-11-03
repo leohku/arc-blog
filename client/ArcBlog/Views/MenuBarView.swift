@@ -59,7 +59,7 @@ struct MenuBarView: View {
         Button("Publish Manually") {
             connectionStore.publishManually()
         }
-        .disabled(persistedData.streaming || connectionState == ConnectionState.disconnected)
+        .disabled(!(connectionStore.connection.state == ConnectionState.connected))
         .keyboardShortcut("p")
         Divider()
         Button("Settings") {

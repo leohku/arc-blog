@@ -8,7 +8,7 @@
 import Foundation
 
 class Publisher {
-    private static func makeNetworkRequest(url: String, body: String, expectedUpdate: Bool) async throws {
+    private static func makeNetworkRequest(url: String, body: String) async throws {
         let url = URL(string: "\(url)/api-private/update")!
 
         var request = URLRequest(url: url)
@@ -31,17 +31,18 @@ class Publisher {
         }
 
         let decodedResponse = try JSONDecoder().decode(ServerResponse.self, from: data)
-        if decodedResponse.update != expectedUpdate {
-            throw RuntimeError("Unable to update")
+        if !decodedResponse.success {
+            throw RuntimeError(decodedResponse.error!)
         }
     }
     
     static func establishConnection(url: String, key: String) async throws {
         let body = try String(
-            data: JSONEncoder().encode(ClientRequest()),
+            data: JSONEncoder().encode(
+                ClientRequest(secret_key: key)),
             encoding: .utf8
         )!
-        try await Self.makeNetworkRequest(url: url, body: body, expectedUpdate: false)
+        try await Self.makeNetworkRequest(url: url, body: body)
     }
     
     static func publish(url: String, key: String, data: Space) async throws {
@@ -50,9 +51,13 @@ class Publisher {
             encoding: .utf8
         )
         let body = try String(
-            data: JSONEncoder().encode(ClientRequest(space: stringifiedSpace)),
+            data: JSONEncoder().encode(
+                ClientRequest(
+                    secret_key: key,
+                    space: stringifiedSpace
+                )),
             encoding: .utf8
         )!
-        try await Self.makeNetworkRequest(url: url, body: body, expectedUpdate: true)
+        try await Self.makeNetworkRequest(url: url, body: body)
     }
 }

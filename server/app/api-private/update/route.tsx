@@ -1,50 +1,87 @@
 import { kv } from "@vercel/kv";
-export type RequestBody = {
-  secret_key?: string;
-  space?: string;
-};
 
 export async function POST(request: Request) {
   const baseResponse = {
     version: "v0.1-beta",
-    update: false,
   };
 
-  let reqBody: RequestBody;
+  let reqBody: ClientRequest;
+  let resBody: ServerResponse;
 
   try {
     reqBody = await request.json();
   } catch {
-    return new Response(
-      JSON.stringify({
+    resBody = {
+      ...baseResponse,
+      success: false,
+      error: "Malformed request",
+    };
+    return new Response(JSON.stringify(resBody), {
+      status: 400,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
+
+  if (!reqBody.secret_key || typeof reqBody.secret_key !== "string") {
+    resBody = {
+      ...baseResponse,
+      success: false,
+      error: "Invalid secret",
+    };
+    return Response.json(resBody);
+  }
+
+  try {
+    const secret_key = await kv.get("secret_key");
+    if (secret_key === null || secret_key !== reqBody.secret_key) {
+      resBody = {
         ...baseResponse,
-        error: "Malformed request",
-      }),
-      {
-        status: 400,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+        success: false,
+        error: "Keys do not match",
+      };
+      return Response.json(resBody);
+    }
+  } catch (error) {
+    resBody = {
+      ...baseResponse,
+      success: false,
+      error: "Error fetching secret key",
+    };
+    return Response.json(resBody);
   }
 
   if (!reqBody.space) {
-    return Response.json(baseResponse);
+    resBody = {
+      ...baseResponse,
+      success: true,
+    };
+    return Response.json(resBody);
   }
 
-  // TODO: Implement secret key verification
+  if (typeof reqBody.space !== "string") {
+    resBody = {
+      ...baseResponse,
+      success: false,
+      error: "Invalid space",
+    };
+    return Response.json(resBody);
+  }
 
   try {
     await kv.set("space", reqBody.space);
-    return Response.json({
+    resBody = {
       ...baseResponse,
-      update: true,
-    });
+      success: true,
+    };
+    return Response.json(resBody);
   } catch (error) {
-    return Response.json({
+    resBody = {
       ...baseResponse,
+      success: false,
       error: "Error updating KV store",
-    });
+    };
+    return Response.json(resBody);
   }
 }

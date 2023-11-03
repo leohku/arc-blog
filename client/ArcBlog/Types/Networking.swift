@@ -8,11 +8,12 @@
 import Foundation
 
 struct ClientRequest: Codable {
+    var secret_key: String;
     var space: String?
 }
 
 struct ServerResponse: Codable {
     var version: String
-    var update: Bool
+    var success: Bool
     var error: String?
 }
