@@ -66,7 +66,7 @@ struct MenuBarView: View {
             openWindow(id: "settings-window")
         }
         .keyboardShortcut(",")
-        Button("Quit Arc Blogs") {
+        Button("Quit Arc Blog") {
             NSApplication.shared.terminate(nil)
         }
         .keyboardShortcut("q")

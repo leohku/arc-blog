@@ -40,7 +40,7 @@ struct SettingsView: View {
                     .frame(width: 48, height: 54)
                     .foregroundColor(.accentColor)
                     .padding(.bottom, 4)
-                Text("Arc Blogs")
+                Text("Arc Blog")
                     .font(.system(size: 28))
                     .padding(.bottom, 4)
                 Text("v0.1 Beta")
@@ -127,7 +127,7 @@ struct SettingsView: View {
             }
         }
         .padding()
-        .navigationTitle("Arc Blogs")
+        .navigationTitle("Arc Blog")
         .frame(width: 300, height: 370)
         .onAppear(perform: {
             let persistedData = connectionStore.connection.persistedData
